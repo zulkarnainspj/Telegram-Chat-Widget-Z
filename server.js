@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const request = require('request');
 const compression = require('compression');
 const cors = require('cors');
@@ -32,31 +34,24 @@ app.post('/hook', function (req, res) {
 
 			if (text.startsWith('/start')) {
 				console.log('/start chatId ' + chatId);
-				sendTelegramMessage(chatId,
-					'*Welcome to Telegram Chat Widget Bot* 🔥\n\n' +
-					'Your unique chat id is `' + chatId + '`\n' +
-					'Use it to link between the embedded chat and this telegram chat\n\n' +
-
-					'🔹 Works on any MikroTik Hotspot Portals\n' +
-					'🔹 Easy access for customer support\n' +
-					'🔹 Real-time chats\n' +
-					'🔹 Instant support and troubleshooting\n' +
-					'🔹 Personalized interaction with your chat ID\n\n' +
-
-					'*Available Commands:*\n' +
-					'`/start` - Info about @MikrotikHsSupportBot \n' +
-					'`/all [any_text]` - Send message to all online users\n' +
-					'`/who` -  Get online users list\n' +
-					'`/online` - Set chat online (Show Chat Widget)\n' +
-					'`/offline` - Set chat offline (Hide Chat Widget)\n' +
-					'`/ban [name]` - Ban user\n' +
-					'`/unban [name]` - Unban user\n' +
-					'`/user [name]` - See the user\'s information\n' +
-					'`/info` - more information about @MikrotikHsSupportBot\n' +
-					'`/help` - For detailed instructions\n\n' +
-
-					'[Kintoyyy/Telegram-Chat-Widget](https://github.com/Kintoyyy/Telegram-Chat-Widget)Consider giving it a ⭐',
-					'Markdown');
+				sendTelegramMessage(
+				chatId,
+				"*Selamat datang di Telegram Chat Widget Bot* 🔥\n\n" +
+					"ID chat unik Anda adalah `" +
+					chatId +
+					"`\n" +
+					"*Perintah yang Tersedia:*\n" +
+					"`/start` - Info tentang bot \n" +
+					"`/all [any_text]` - Kirim pesan ke semua pengguna online\n" +
+					"`/who` - Dapatkan daftar pengguna online\n" +
+					"`/online` - Set obrolan online (Tampilkan Widget Obrolan)\n" +
+					"`/offline` - Set obrolan offline (Sembunyikan Widget Obrolan)\n" +
+					"`/ban [name]` - Blokir pengguna\n" +
+					"`/unban [name]` - Buka blokir pengguna\n" +
+					"`/user [name]` - Lihat informasi pengguna\n" +
+					"https://github.com/zulkarnainspj",
+				"Markdown",
+				);
 			}
 
 			if (text.startsWith('/help')) {
@@ -84,10 +79,6 @@ app.post('/hook', function (req, res) {
 					'<script id="intergram" type="text/javascript" src="' + serverLink + '/js/widget.js"></script>\n' +
 					'```\n' +
 					'3. *Done*\n\n' +
-					'for more details: [Kintoyyy/Telegram-Chat-Widget](https://github.com/Kintoyyy/Telegram-Chat-Widget)\n\n' +
-					'*Feel free to support this project*\n' +
-					'*Paypal* - paypal.me/Kintoyyyy\n' +
-					'*Gcash / Maya - * `09760009422`\n',
 					'Markdown');
 			}
 
@@ -111,7 +102,7 @@ app.post('/hook', function (req, res) {
 				const usersOnline = users.filter(user => user.chatId === chatId && user.online);
 				if (usersOnline.length) {
 					sendTelegramMessage(chatId,
-						'*Online users* 🧑‍🦯\n' +
+						'*Daftar Pengguna Aktif* 🧑‍🦯\n' +
 						usersOnline.map(user => '- `' + user.userId + '`').join('\n'),
 						'Markdown');
 				} else {
@@ -131,7 +122,11 @@ app.post('/hook', function (req, res) {
 						online: true
 					})
 				}
-				sendTelegramMessage(chatId, 'Your chat is *online* 🟢 now and it will be shown for new users', 'Markdown');
+				sendTelegramMessage(
+					chatId,
+					"Live Chat *online* 🟢 sekarang pengguna bisa mengirim pesan di Live Chat",
+					"Markdown",
+				);
 			}
 
 			if (text.startsWith('/offline')) {
@@ -145,7 +140,11 @@ app.post('/hook', function (req, res) {
 						online: false
 					})
 				}
-				sendTelegramMessage(chatId, 'Your chat is *offline* 🔴 now and it won\'t be shown for new users', 'Markdown');
+				sendTelegramMessage(
+					chatId,
+					"Live Chat *offline* 🔴 sekarang pengguna tidak bisa mengirim pesan di Live Chat",
+					"Markdown",
+				);
 			}
 
 			if (text.startsWith('/all')) {
@@ -162,15 +161,15 @@ app.post('/hook', function (req, res) {
 				const userId = text.replace(/^\/ban(@?\w+)? /, '');
 
 				if (userId === '') {
-					sendTelegramMessage(chatId, 'Please enter a username ex.`/ban cat`', 'Markdown');
+					sendTelegramMessage(chatId, 'Kirimkan username ex.`/ban cat`', 'Markdown');
 				}
 
 				const userIndex = users.findIndex(user => user.userId === userId && user.chatId === chatId);
 				if (users[userIndex]) {
 					users[userIndex].banned = true;
-					sendTelegramMessage(chatId, 'Ok, *' + userId + '* was banned ⛔', 'Markdown');
+					sendTelegramMessage(chatId, 'Ok, *' + userId + '* telah di banned ⛔', 'Markdown');
 				} else {
-					sendTelegramMessage(chatId, 'User not found or banned.', 'Markdown');
+					sendTelegramMessage(chatId, 'Pengguna tidak ditemukan atau sudah di banned.', 'Markdown');
 				}
 			}
 
@@ -179,9 +178,9 @@ app.post('/hook', function (req, res) {
 				const userIndex = users.findIndex(user => user.userId === userId && user.chatId === chatId);
 				if (userIndex !== -1) {
 					users[userIndex].banned = false;
-					sendTelegramMessage(chatId, 'Ok, *' + userId + '* was unbanned 🥳', 'Markdown');
+					sendTelegramMessage(chatId, 'Ok, *' + userId + '* telah di unban 🥳', 'Markdown');
 				} else {
-					sendTelegramMessage(chatId, 'User not found or not banned.', 'Markdown');
+					sendTelegramMessage(chatId, 'Pengguna tidak ditemukan atau tidak dalam daftar banned.', 'Markdown');
 				}
 			}
 
@@ -195,7 +194,7 @@ app.post('/hook', function (req, res) {
 					const CustomMsg = `\`${username}\`\n\n${Object.entries(CustomData).map(([label, value]) => `${label.trim()} : \`${value.trim()}\``).join('\n')}`;
 					sendTelegramMessage(chatId, CustomMsg, 'Markdown');
 				} else {
-					sendTelegramMessage(chatId, 'User not found', 'Markdown');
+					sendTelegramMessage(chatId, 'Pengguna tidak ditemukan', 'Markdown');
 				}
 			}
 
@@ -288,17 +287,32 @@ io.on('connection', function (client) {
 
 		console.log('useId ' + userId + ' connected to chatId ' + chatId);
 
-		const CustomMsg = `\`${userId}\`: *connected to chat* 😶‍🌫️\n\n`;
+		const CustomMsg = `\`${userId}\`: *terhubung ke chat* 😶‍🌫️\n\n`;
 		let CustomMsgData = '';
 
 		if (CustomData) {
 			CustomMsgData = `${Object.entries(CustomData).map(([label, value]) => `${label}: ${value}`).join('\n')}`;
 		}
 
-		sendTelegramMessage(chatId, `${CustomMsg}${CustomMsgData}`, 'Markdown', true);
-
-
 		const userIndex = users.findIndex(user => user.userId === userId && user.chatId === chatId);
+		const now = Date.now();
+		let shouldSendConnectMessage = true;
+
+		if (users[userIndex] && users[userIndex].lastDisconnectAt) {
+			const diff = now - users[userIndex].lastDisconnectAt;
+			if (diff < 15 * 60 * 1000) {
+				shouldSendConnectMessage = false;
+			}
+		}
+
+		if (shouldSendConnectMessage) {
+			sendTelegramMessage(chatId, `${CustomMsg}${CustomMsgData}`, 'Markdown', true);
+		}
+
+		if (users[userIndex]) {
+			users[userIndex].lastDisconnectAt = undefined;
+		}
+
 		if (users[userIndex]) {
 			if (users[userIndex].banned) {
 				client.disconnect();
@@ -309,7 +323,7 @@ io.on('connection', function (client) {
 			users[userIndex].messages.forEach(message => io.emit(chatId + '-' + userId, message));
 			users[userIndex].messages = [];
 			if (users[userIndex].active) {
-				sendTelegramMessage(chatId, '`' + userId + '` has come back 👋', 'Markdown', true);
+				sendTelegramMessage(chatId, '`' + userId + '` telah kembali 👋', 'Markdown', true);
 			}
 		}
 
@@ -326,7 +340,7 @@ io.on('connection', function (client) {
 
 			if (msg.text === '/help') {
 				io.emit(chatId + '-' + userId, {
-					text: registerMsg.helpMsg || 'help is coming😭',
+					text: registerMsg.helpMsg || 'kami akan segera membantumu😭',
 					from: 'admin',
 				});
 				return;
@@ -361,12 +375,13 @@ io.on('connection', function (client) {
 			const userIndex = users.findIndex(user => user.userId === userId && user.chatId === chatId);
 			if (users[userIndex]) {
 				users[userIndex].online = false;
+				users[userIndex].lastDisconnectAt = Date.now();
 				if (users[userIndex].active) {
 					users[userIndex].unactiveTimeout = setTimeout(() => {
 						users[userIndex].active = false;
 					}, 60000);
 					if (!users[userIndex].banned) {
-						sendTelegramMessage(chatId, '`' + userId + '` has left 🏃💨', 'Markdown', true);
+						sendTelegramMessage(chatId, '`' + userId + '` telah keluar dari chat 🏃💨', 'Markdown', true);
 					}
 				}
 			}
